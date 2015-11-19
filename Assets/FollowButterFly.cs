@@ -5,6 +5,8 @@ public class FollowButterFly : MonoBehaviour {
 
     [SerializeField]
     GameObject Butterfly;
+    const float trackingSpeed = 10f;
+    const float zoomSpeed = 5f;
 
 	// Use this for initialization
 	void Start () {
@@ -12,9 +14,9 @@ public class FollowButterFly : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        // follow the butterfly in the y position
+	void LateUpdate () {
         var pos = transform.localPosition;
-        pos.x = Butterfly.transform.localPosition.x;
+        pos.x = Butterfly.transform.position.x;
+        transform.position = pos;
 	}
 }
