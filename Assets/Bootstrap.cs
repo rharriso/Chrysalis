@@ -10,7 +10,6 @@ namespace Chrysalis
         void Start()
         {
             GameState.sharedInstance.start();
-
         }
 
         // Update is called once per frame

@@ -6,6 +6,8 @@ namespace Chrysalis
 {
     public class Butterfly : MonoBehaviour
     {
+        enum FlapDirection {Right, Left}
+
         [SerializeField]
         GameObject Body;
 
@@ -13,14 +15,18 @@ namespace Chrysalis
         const float OSCILATE_PERIOD = 250f;
         const float GRAVITY = 5f; // units per millisecond
         const float FLAP_ACCEL = 20f; // units per millisecond
-        static float FLAP_DURATION = 250f; // milliseconds
-        static float FLAP_DELAY = 300f; // milliseconds
+        static float FLAP_DURATION = 150f; // milliseconds
+        static float FLAP_DELAY = 50f; // milliseconds
         static float CLAMP_Y = 1.5f;
+        static float MAX_VY = 1.5f; // maximum y velocity
+        static float MAX_VX = 0.1f; // maximum X velocity
+        static float DELTA_VX = 0.05f; // maximum X velocity
 
         float initBY;
         float initBX;
         float initBZ;
-        float velocity = 0.0f;
+        float velocity_y = 0.0f;
+        float velocity_x = 0.0f;
         bool facingRight;
         bool flapping = false;
         bool canFlap = true;
@@ -48,15 +54,9 @@ namespace Chrysalis
             Body.transform.localPosition = new Vector3(initBX,
                 initBY + periodicComponent, initBZ);
 
-            // face left or right 
-            if ((!facingRight && Input.GetKeyDown(KeyCode.LeftArrow)) ||
-                (facingRight && Input.GetKeyDown(KeyCode.RightArrow)))
-            {
-                var s = Body.transform.localScale;
-                s.x = -s.x;
-                Body.transform.localScale = s;
-                facingRight = !facingRight;
-            }
+            // go right or left
+            if (Input.GetKeyDown(KeyCode.RightArrow)) flap(FlapDirection.Right);
+            else if (Input.GetKeyDown(KeyCode.LeftArrow)) flap(FlapDirection.Left);
 
             var accel = -GRAVITY;
             var now = DateTime.Now;
@@ -70,37 +70,53 @@ namespace Chrysalis
                 flapping = false;
 
             // only flap every once in a while
-            if (!canFlap && (now - flapStart).TotalMilliseconds > FLAP_DELAY) 
+            if (!canFlap && (now - flapStart).TotalMilliseconds > FLAP_DELAY)
                 canFlap = true;
 
-            // start flapping
-            if (canFlap && Input.GetKeyDown(KeyCode.LeftArrow) ||
-                    Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                flapping = true;
-                canFlap = false;
-                flapStart = DateTime.Now;
-            }
 
             // calculate accell
             var duration = (tick - prevTick).TotalSeconds;
             if (duration > 1) duration = 0;
 
-            velocity += (float)(accel * duration);
+            velocity_y += (float)(accel * duration);
 
             // calculate position from velocity
             var pos = transform.localPosition;
-            pos.y += velocity;
+            pos.y += velocity_y;
+            pos.x += velocity_x;
 
             // clamp by stopping velocity and postion
             if (pos.y > -CLAMP_Y || pos.y < CLAMP_Y)
-                velocity = 0;
+                velocity_y = 0;
             pos.y = Mathf.Clamp(pos.y, -CLAMP_Y, CLAMP_Y);
 
             // set position and move on
             transform.localPosition = pos;
             prevTick = tick;
         }
+
+        /// <summary>
+        /// flap makes the butterfly flap, defaults to the right
+        /// </summary>
+        /// <param name="rightwards"></param>
+        private void flap(FlapDirection dir)
+        {
+            if (!canFlap) return;
+            var rightwards = dir == FlapDirection.Right;
+            flapping = true;
+            canFlap = false;
+            flapStart = DateTime.Now;
+
+            // turn the bird based on direction pressed
+            var s = transform.localScale;
+            s.x = Mathf.Abs(s.x) * (rightwards ? 1f : -1f);
+            transform.localScale = s;
+
+            // adjust x velocity
+            velocity_x += rightwards ? DELTA_VX : -DELTA_VX;
+            velocity_x = Mathf.Clamp(velocity_x, -MAX_VX, MAX_VX);
+        }
+
     }
 
 }
