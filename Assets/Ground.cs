@@ -12,6 +12,7 @@ namespace Chrysalis
 
         int bufferSize = 5;
         int bufferZero = 2;
+        int cellCenter = 0;
         List<GameObject> groundCells = new List<GameObject>();
 
         
@@ -36,6 +37,7 @@ namespace Chrysalis
                     cellObj = GameObject.Instantiate(initGroundCell);
 
                 groundCells.Add(cellObj);
+                cellObj.name += " " + i;
                 cellObj.transform.parent = transform;
                 PositionCell(cellObj, offset);
             }
@@ -56,7 +58,10 @@ namespace Chrysalis
 
             // shift cells if needed
             if (cell != prevCell)
+            {
                 ShiftCells(cell - prevCell);
+                prevCell = cell;
+            }
 
         }
 
@@ -66,7 +71,24 @@ namespace Chrysalis
         /// <param name="magnitude"></param>
         void ShiftCells(int magnitude)
         {
-            Debug.Log("Shift Cells! " + magnitude);
+            for(int i = 0; i < Mathf.Abs(magnitude); i++)
+            {
+                if(magnitude > 0)
+                {
+                    cellCenter++;
+                    var cell = groundCells[0];
+                    groundCells.RemoveAt(0);
+                    groundCells.Add(cell);
+                    PositionCell(cell, cellCenter + bufferZero);
+                } else
+                {
+                    cellCenter--;
+                    var cell = groundCells[groundCells.Count - 1];
+                    groundCells.Remove(cell);
+                    groundCells.Insert(0, cell);
+                    PositionCell(cell, cellCenter - bufferZero);
+                }
+            }
         }
 
         /// <summary>
@@ -77,7 +99,6 @@ namespace Chrysalis
         void PositionCell(GameObject cell, int position)
         {
             var pos = zeroPosition;
-            Debug.Log(bufferZero + " " + (position - bufferZero));
             pos.x = position * size.x;
             cell.transform.localPosition = pos;
         }
