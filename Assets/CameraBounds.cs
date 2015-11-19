@@ -1,28 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraBounds : MonoBehaviour {
-    static Bounds get()
+namespace Chrysalis
+{
+    public class CameraBounds : MonoBehaviour
     {
-        return current.bounds;
-    } 
+        public static Bounds bounds;
 
-    static CameraBounds current; 
-    Bounds bounds;
+        // Use this for initialization
+        void Start()
+        {
+            var vertExtent = Camera.main.GetComponent<Camera>().orthographicSize;
+            var horzExtent = vertExtent * Screen.width / Screen.height;
 
-	// Use this for initialization
-	void Start () {
-        current = this;
-         var vertExtent = Camera.main.GetComponent<Camera>().orthographicSize;    
-         var horzExtent = vertExtent * Screen.width / Screen.height;
- 
-        bounds = new Bounds(transform.position,
-            new Vector2(horzExtent, vertExtent));
-	}
+            bounds = new Bounds(transform.position,
+                new Vector2(horzExtent, vertExtent));
+        }
 
-    void Update()
-    {
-        bounds.center = transform.position;
-        Debug.Log(bounds);
+        /// <summary>
+        /// update the center of the camera bounds
+        /// </summary>
+        void Update()
+        {
+            bounds.center = transform.position;
+        }
     }
 }
