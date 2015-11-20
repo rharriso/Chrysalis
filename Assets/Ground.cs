@@ -38,7 +38,7 @@ namespace Chrysalis
 
                 groundCells.Add(cellObj);
                 cellObj.name += " " + i;
-                cellObj.transform.parent = transform;
+                cellObj.transform.SetParent(transform);
                 PositionCell(cellObj, offset);
             }
         }
@@ -101,6 +101,7 @@ namespace Chrysalis
             var pos = zeroPosition;
             pos.x = position * size.x;
             cell.transform.localPosition = pos;
+            cell.GetComponent<GroundCell>().refresh();
         }
     }
 }

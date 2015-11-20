@@ -88,7 +88,7 @@ namespace Chrysalis
             // clamp by stopping velocity and postion
             if (pos.y > -CLAMP_Y || pos.y < CLAMP_Y)
                 velocity_y = 0;
-            pos.y = Mathf.Clamp(pos.y, -CLAMP_Y, CLAMP_Y);
+            pos.y = Mathf.Clamp(pos.y, -CLAMP_Y, 3*CLAMP_Y);
 
             // set position and move on
             transform.localPosition = pos;
