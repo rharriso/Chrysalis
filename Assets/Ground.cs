@@ -24,7 +24,7 @@ namespace Chrysalis
         void Start()
         {
             // create three ground cells
-            size = initGroundCell.GetComponent<BoxCollider2D>().bounds.size;
+            size = initGroundCell.GetComponent<RectTransform>().rect.size;
             zeroPosition = initGroundCell.transform.localPosition;
 
             for (int i = 0; i < bufferSize; i++)
