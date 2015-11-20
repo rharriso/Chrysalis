@@ -6,7 +6,7 @@ namespace Chrysalis
 {
     public class Butterfly : MonoBehaviour
     {
-        enum FlapDirection {Right, Left}
+        enum FlapDirection { Right, Left }
 
         [SerializeField]
         GameObject Body;
@@ -88,7 +88,7 @@ namespace Chrysalis
             // clamp by stopping velocity and postion
             if (pos.y > -CLAMP_Y || pos.y < CLAMP_Y)
                 velocity_y = 0;
-            pos.y = Mathf.Clamp(pos.y, -CLAMP_Y, 3*CLAMP_Y);
+            pos.y = Mathf.Clamp(pos.y, -CLAMP_Y, 3 * CLAMP_Y);
 
             // set position and move on
             transform.localPosition = pos;
@@ -117,6 +117,13 @@ namespace Chrysalis
             velocity_x = Mathf.Clamp(velocity_x, -MAX_VX, MAX_VX);
         }
 
+/// <summary>
+/// Colotion started, handle for different objects
+/// </summary>
+/// <param name="collision"></param>
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            Debug.Log(collision.gameObject.name);
+        }
     }
-
 }
