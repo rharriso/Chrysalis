@@ -13,7 +13,7 @@ namespace Chrysalis
         Vector3 featureCellSize;
         Vector3 featureCellPos;
         Vector3 size;
-        int featureCellCount = 3;
+        int featureCellCount = 1;
         int centerIndex = 1;
         float offset = 6f;
 
