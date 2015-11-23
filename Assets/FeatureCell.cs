@@ -13,6 +13,8 @@ namespace Chrysalis
         [SerializeField]
         GameObject SpiderWeb;
         [SerializeField]
+        GameObject SpiderWebFloat;
+        [SerializeField]
         GameObject Branch;
 
         List<GameObject> options = new List<GameObject>();
@@ -26,7 +28,6 @@ namespace Chrysalis
             options.Add(Flower);
             options.Add(SpiderWeb);
             options.Add(Branch);
-            Reload();
         }
 
         // Update is called once per frame
@@ -39,24 +40,31 @@ namespace Chrysalis
         /// reload items in the scene
         /// </summary>
         public void Reload() {
-            foreach (var o in options)
-                o.SetActive(false);
-
+            HideAllFeatures();
             // select random options for activations
             var prob = Random.value;
 
-            if(prob < 0.25f)
+            if(prob < 0.15f)
                 currOption = Tree;
-            else if(prob < 0.5f)
+            else if(prob < 0.40f)
                 currOption = Flower;
-            else if(prob < 0.75f)
+            else if(prob < 0.65f)
                 currOption = SpiderWeb;
+            else if(prob < 0.85f)
+                currOption = SpiderWebFloat;
             else
                 currOption = Branch;
 
             currOption.SetActive(true) ;
         }
+
+        /// <summary>
+        /// Hides all the child features
+        /// </summary>
+        void HideAllFeatures()
+        {
+            foreach (var o in options)
+                o.SetActive(false);
+        }
     }
-
-
 }

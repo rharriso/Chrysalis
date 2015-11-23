@@ -59,7 +59,7 @@ namespace Chrysalis
             // shift cells if needed
             if (cell != prevCell)
             {
-                ShiftCells(cell - prevCell);
+                ShiftGroundCells(cell - prevCell);
                 prevCell = cell;
             }
 
@@ -69,7 +69,7 @@ namespace Chrysalis
         /// Shift the ground cells by the passed magnitude 
         /// </summary>
         /// <param name="magnitude"></param>
-        void ShiftCells(int magnitude)
+        void ShiftGroundCells(int magnitude)
         {
             for(int i = 0; i < Mathf.Abs(magnitude); i++)
             {
@@ -101,7 +101,10 @@ namespace Chrysalis
             var pos = zeroPosition;
             pos.x = position * size.x;
             cell.transform.localPosition = pos;
-            cell.GetComponent<GroundCell>().refresh();
+            if(position == 0)
+                cell.GetComponent<GroundCell>().SetFeaturesActive(false);
+            else
+                cell.GetComponent<GroundCell>().Refresh();
         }
     }
 }

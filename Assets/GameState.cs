@@ -1,55 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Chrysalis
+﻿namespace Chrysalis
 {
-    public class GameState
-    {
-        private static GameState gameState = null;
+    public delegate void GameStateChangedEventHandler();
 
-        /// <summary>
-        /// The shared instance singleton
-        /// </summary>
-        public static GameState sharedInstance
-        {
+    public enum GameStateOption
+    {
+        playing,
+        menu,
+        dead
+    };
+
+    class GameState
+    {
+        public static event GameStateChangedEventHandler stateChanged;
+        private static GameStateOption sharedState = GameStateOption.menu; 
+
+        public static GameStateOption Current{
             get
             {
-                if (gameState == null)
-                {
-                    gameState = new GameState();
-                }
-                return gameState;
+                return sharedState;
             }
-        }
-
-
-        /// when did this game state start
-        private DateTime startTime;
-        private bool running;
-
-
-        /// <summary>
-        /// Start the timer
-        /// </summary>
-        public void start()
-        {
-            if (!running)
+            set
             {
-                running = true;
-                startTime = DateTime.Now;
+                sharedState = value;
+                if (stateChanged != null)
+                    stateChanged();
             }
-        }
-
-        /// <summary>
-        /// Returns the ammoutn of time since start
-        /// </summary>
-        /// <returns></returns>
-        public TimeSpan currentTime()
-        {
-            var currTime = DateTime.Now;
-            return currTime.Subtract(startTime);
         }
     }
 }

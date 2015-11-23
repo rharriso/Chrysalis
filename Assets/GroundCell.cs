@@ -13,9 +13,10 @@ namespace Chrysalis
         Vector3 featureCellSize;
         Vector3 featureCellPos;
         Vector3 size;
-        int featureCellCount = 1;
+        int featureCellCount = 3;
         int centerIndex = 1;
         float offset = 6f;
+        private bool filled;
 
 
         // Use this for initialization
@@ -24,13 +25,12 @@ namespace Chrysalis
             size = GetComponent<RectTransform>().rect.size;
             featureCellPos = sourceCell.transform.localPosition;
             featureCellSize = sourceCell.GetComponent<RectTransform>().rect.size;
-            fillWithFeatureCells();
         }
 
         // Update is called once per frame
         void Update()
         {
-
+        
         }
 
         /// <summary>
@@ -47,13 +47,33 @@ namespace Chrysalis
                 cell.transform.localPosition = pos;
                 featureCells.Add(cell);
             }
+
+            filled = true;
         }
 
-        public void refresh()
+        /// <summary>
+        /// Refreshes the cells reloading a new feature
+        /// </summary>
+        public void Refresh()
+        {
+            if (!filled) fillWithFeatureCells();
+
+            foreach(var cell in featureCells)
+            {
+                cell.gameObject.SetActive(true);
+                cell.Reload();
+            }
+        }
+
+        /// <summary>
+        /// Sets the active state of all the feature cells
+        /// </summary>
+        /// <param name="active"></param>
+        public void SetFeaturesActive(bool active)
         {
             foreach(var cell in featureCells)
             {
-                cell.Reload();
+                cell.gameObject.SetActive(active);
             }
         }
     }
