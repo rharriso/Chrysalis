@@ -15,13 +15,13 @@ namespace Chrysalis
 
         const float OSCILATE_MAGNITUDE = 0.1f;
         const float OSCILATE_PERIOD = 250f;
-        const float GRAVITY = 0.25f; // units per millisecond
-        const float FLAP_ACCEL = 2f; // units per millisecond
+        const float GRAVITY = 0.1f; // units per millisecond
+        const float FLAP_ACCEL = 1f; // units per millisecond
         static float FLAP_DURATION = 50f; // milliseconds
         static float FLAP_DELAY = 25f; // milliseconds
         static float MAX_Y= 6f;
         static float MIN_Y= -1.5f;
-        static float MAX_VY = 0.25f; // maximum y velocity
+        static float MAX_VY = 0.05f; // maximum y velocity
         static float MAX_VX = 0.10f; // maximum X velocity
         static float DELTA_VX = 0.05f; // maximum X velocity
 
