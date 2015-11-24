@@ -4,7 +4,8 @@ using System.Collections;
 
 namespace Chrysalis
 {
-    public delegate void ButterflyEventHandler(object sender, EventArgs e);
+    public delegate void ButterflyDeathEventHandler(object sender, String killerName);
+
 
     public class Butterfly : MonoBehaviour
     {
@@ -35,8 +36,20 @@ namespace Chrysalis
         bool canFlap = true;
         DateTime flapStart;
 
+
+        float flowerEnergy = 10f;
+        private bool onFlower;
+
+        float FlowerEnergy
+        {
+            get
+            {
+                return flowerEnergy;
+            }
+        }
+
         // listen to the butterfly dying
-        public event ButterflyEventHandler Died;
+        public event ButterflyDeathEventHandler Died;
 
         /// <summary>
         /// Reset the butterfly position
@@ -52,7 +65,6 @@ namespace Chrysalis
         // Use this for initialization
         void Start()
         {
-            Debug.Log("SUP FROM THE BUTTERFLY");
             initBY = Body.transform.localPosition.y;
             initBX = Body.transform.localPosition.x;
             initBZ = Body.transform.localPosition.z;
@@ -82,25 +94,7 @@ namespace Chrysalis
             Body.transform.localPosition = new Vector3(initBX,
                 initBY + periodicComponent, initBZ);
 
-            // go right or left
-            if (Input.GetKeyDown(KeyCode.RightArrow)) flap(FlapDirection.Right);
-            if (Input.GetKeyDown(KeyCode.DownArrow)) flap(FlapDirection.Down);
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) flap(FlapDirection.Left);
-            // tab left or right
-            if (Input.touchCount == 1)
-            {
-                var thirdScreen = Screen.width / 3;
-                var touch = Input.touches[0];
-                if (touch.phase == TouchPhase.Began)
-                {
-                    if (touch.position.x > thirdScreen)
-                        flap(FlapDirection.Right);
-                    else if (touch.position.x > Screen.width - thirdScreen)
-                        flap(FlapDirection.Down);
-                    else
-                        flap(FlapDirection.Left);
-                }
-            }
+            checkFlapInputs();
 
             var accel = -GRAVITY;
             var now = DateTime.Now;
@@ -116,7 +110,6 @@ namespace Chrysalis
             // only flap every once in a while
             if (!canFlap && (now - flapStart).TotalMilliseconds > FLAP_DELAY)
                 canFlap = true;
-
 
             // calculate accell
             var duration = Time.deltaTime;
@@ -137,6 +130,32 @@ namespace Chrysalis
 
             // set position and move on
             transform.localPosition = pos;
+        }
+
+        /// <summary>
+        /// Check the inputs for flapping
+        /// </summary>
+        private void checkFlapInputs()
+        {
+            // go right or left
+            if (Input.GetKeyDown(KeyCode.RightArrow)) flap(FlapDirection.Right);
+            else if (Input.GetKeyDown(KeyCode.DownArrow)) flap(FlapDirection.Down);
+            else if (Input.GetKeyDown(KeyCode.LeftArrow)) flap(FlapDirection.Left);
+            // tab left or right
+            if (Input.touchCount == 1)
+            {
+                var thirdScreen = Screen.width / 3;
+                var touch = Input.touches[0];
+                if (touch.phase == TouchPhase.Began)
+                {
+                    if (touch.position.x > thirdScreen)
+                        flap(FlapDirection.Right);
+                    else if (touch.position.x > Screen.width - thirdScreen)
+                        flap(FlapDirection.Down);
+                    else
+                        flap(FlapDirection.Left);
+                }
+            }
         }
 
         /// <summary>
@@ -185,7 +204,22 @@ namespace Chrysalis
             {
                 case "Spiderweb":
                 case "Branch":
-                    Die(EventArgs.Empty);
+                    Die(other.name);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handle collision end events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="other"></param>
+        void OnBodyTriggerExited(object sender, Collider2D other)
+        {
+            switch (other.name)
+            {
+                case "Flower":
+                    onFlower = true;
                     break;
             }
         }
@@ -193,10 +227,10 @@ namespace Chrysalis
         /// <summary>
         /// Kill the butterfly
         /// </summary>
-        void Die(EventArgs e)
+        void Die(String killerName)
         {
             if (Died != null)
-                Died(this, e);
+                Died(this, killerName);
         }
     }
 }

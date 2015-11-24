@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 namespace Chrysalis
@@ -9,20 +10,22 @@ namespace Chrysalis
         Butterfly butterfly;
         [SerializeField]
         ScoreHolder scoreHolder;
+        [SerializeField]
+        Text DeathMsg;
            
         // Use this for initialization
         void Start()
         {
             // respond to butteryfly death
             butterfly.Died +=
-                new ButterflyEventHandler(OnButterflyDeath);
+                new ButterflyDeathEventHandler(OnButterflyDeath);
             butterfly.Reset();
         }
 
         public void Detach()
         {
             butterfly.Died -=
-                new ButterflyEventHandler(OnButterflyDeath);
+                new ButterflyDeathEventHandler(OnButterflyDeath);
         }
 
         // Update is called once per frame
@@ -36,12 +39,22 @@ namespace Chrysalis
         /// Handle the buttry flies death
         /// </summary>
         /// <param name="e"></param>
-        void OnButterflyDeath(object sender, EventArgs e)
+        void OnButterflyDeath(object sender, String killerName)
         {
             // show restart dialog with high scool list and reset button
             // reset the stage
             butterfly.Reset();
             GameState.Current = GameStateOption.dead;
+
+            switch (killerName)
+            {
+                case "Spiderweb":
+                    DeathMsg.text = "You ran into a spiderweb :(";
+                    break;
+                case "Branch":
+                    DeathMsg.text = "You ran into branch, and a squirrle got you :(";
+                    break;
+            }
         }
     }
 }
