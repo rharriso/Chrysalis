@@ -8,7 +8,7 @@ namespace Chrysalis
 
     public class Butterfly : MonoBehaviour
     {
-        enum FlapDirection { Right, Left }
+        enum FlapDirection { Right, Left, Down }
 
         [SerializeField]
         BoxColliderBubbler Body;
@@ -21,8 +21,8 @@ namespace Chrysalis
         static float FLAP_DELAY = 25f; // milliseconds
         static float MAX_Y= 6f;
         static float MIN_Y= -1.5f;
-        static float MAX_VY = 0.05f; // maximum y velocity
-        static float MAX_VX = 0.10f; // maximum X velocity
+        static float MAX_VY = 0.15f; // maximum y velocity
+        static float MAX_VX = 0.075f; // maximum X velocity
         static float DELTA_VX = 0.05f; // maximum X velocity
 
         float initBY;
@@ -84,14 +84,22 @@ namespace Chrysalis
 
             // go right or left
             if (Input.GetKeyDown(KeyCode.RightArrow)) flap(FlapDirection.Right);
+            if (Input.GetKeyDown(KeyCode.DownArrow)) flap(FlapDirection.Down);
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) flap(FlapDirection.Left);
             // tab left or right
             if (Input.touchCount == 1)
             {
-                if (Input.touches[0].position.x > Screen.width / 2)
-                    flap(FlapDirection.Right);
-                else
-                    flap(FlapDirection.Left);
+                var thirdScreen = Screen.width / 3;
+                var touch = Input.touches[0];
+                if (touch.phase == TouchPhase.Began)
+                {
+                    if (touch.position.x > thirdScreen)
+                        flap(FlapDirection.Right);
+                    else if (touch.position.x > Screen.width - thirdScreen)
+                        flap(FlapDirection.Down);
+                    else
+                        flap(FlapDirection.Left);
+                }
             }
 
             var accel = -GRAVITY;
@@ -115,6 +123,7 @@ namespace Chrysalis
             if (duration > 1) duration = 0;
 
             velocity_y += (float)(accel * duration);
+            velocity_y = Mathf.Clamp(velocity_y, MIN_Y, MAX_VY);
 
             // calculate position from velocity
             var pos = transform.localPosition;
@@ -133,7 +142,7 @@ namespace Chrysalis
         /// <summary>
         /// flap makes the butterfly flap, defaults to the right
         /// </summary>
-        /// <param name="rightwards"></param>
+        /// <param name="dir">Direction of the swipe</param>
         private void flap(FlapDirection dir)
         {
             if (!canFlap) return;
@@ -144,11 +153,24 @@ namespace Chrysalis
 
             // turn the bird based on direction pressed
             var s = transform.localScale;
-            s.x = Mathf.Abs(s.x) * (rightwards ? 1f : -1f);
-            transform.localScale = s;
 
-            // adjust x velocity
-            velocity_x += rightwards ? DELTA_VX : -DELTA_VX;
+            switch (dir) {
+                case FlapDirection.Right:
+                    velocity_x += DELTA_VX;
+                    s.x = Mathf.Abs(s.x);
+                    break;
+                case FlapDirection.Down:
+                    velocity_x = 0;
+                    velocity_y = 0;
+                    flapping = false;
+                    break;
+                case FlapDirection.Left:
+                    velocity_x -= DELTA_VX;
+                    s.x = -Mathf.Abs(s.x);
+                    break;
+            }
+
+            transform.localScale = s;
             velocity_x = Mathf.Clamp(velocity_x, -MAX_VX, MAX_VX);
         }
 
