@@ -37,14 +37,15 @@ namespace Chrysalis
         DateTime flapStart;
 
 
-        float flowerEnergy = 10f;
+        const float FLOWER_MAX = 30f;
+        float flowerEnergy = FLOWER_MAX;
         private bool onFlower;
 
-        float FlowerEnergy
+        public float FlowerEnergy
         {
             get
             {
-                return flowerEnergy;
+                return (FLOWER_MAX - flowerEnergy) / FLOWER_MAX;
             }
         }
 
@@ -58,6 +59,7 @@ namespace Chrysalis
         {
             velocity_x = 0;
             velocity_y = 0;
+            flowerEnergy = FLOWER_MAX;
             flapping = false;
             transform.localPosition = new Vector3(0, 0, -5f);
         }
@@ -72,6 +74,8 @@ namespace Chrysalis
 
             Body.triggerEntered +=
                 new BoxColliderEventHandler(OnBodyTriggerEntered);
+            Body.triggerExited +=
+                new BoxColliderEventHandler(OnBodyTriggerExited);
         }
 
         /// <summary>
@@ -95,6 +99,7 @@ namespace Chrysalis
                 initBY + periodicComponent, initBZ);
 
             checkFlapInputs();
+            updateEnergy();
 
             var accel = -GRAVITY;
             var now = DateTime.Now;
@@ -117,6 +122,7 @@ namespace Chrysalis
 
             velocity_y += (float)(accel * duration);
             velocity_y = Mathf.Clamp(velocity_y, MIN_Y, MAX_VY);
+            if (onFlower) velocity_y = Mathf.Max(velocity_y, 0);
 
             // calculate position from velocity
             var pos = transform.localPosition;
@@ -130,6 +136,23 @@ namespace Chrysalis
 
             // set position and move on
             transform.localPosition = pos;
+        }
+
+        /// <summary>
+        /// Update the energy of the butterfly
+        /// </summary>
+        private void updateEnergy()
+        {
+            if (onFlower)
+                flowerEnergy += 10 * Time.deltaTime;
+            else
+                flowerEnergy -= Time.deltaTime;
+            flowerEnergy = Mathf.Min(flowerEnergy, FLOWER_MAX);
+
+            if(flowerEnergy <= 0)
+            {
+                Die("FlowerEnergy");
+            }
         }
 
         /// <summary>
@@ -206,6 +229,11 @@ namespace Chrysalis
                 case "Branch":
                     Die(other.name);
                     break;
+                case "Flower":
+                    onFlower = true;
+                    velocity_x = 0;
+                    velocity_y = 0;
+                    break;
             }
         }
 
@@ -219,7 +247,7 @@ namespace Chrysalis
             switch (other.name)
             {
                 case "Flower":
-                    onFlower = true;
+                    onFlower = false;
                     break;
             }
         }

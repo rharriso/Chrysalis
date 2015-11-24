@@ -12,6 +12,8 @@ namespace Chrysalis
         ScoreHolder scoreHolder;
         [SerializeField]
         Text DeathMsg;
+        [SerializeField]
+        Slider FlowerEnergy;
            
         // Use this for initialization
         void Start()
@@ -32,6 +34,7 @@ namespace Chrysalis
         void Update()
         {
             scoreHolder.SetScore(Mathf.FloorToInt(butterfly.transform.position.x));
+            FlowerEnergy.value = butterfly.FlowerEnergy;
         }
 
 
@@ -53,6 +56,9 @@ namespace Chrysalis
                     break;
                 case "Branch":
                     DeathMsg.text = "You ran into branch, and a squirrle got you :(";
+                    break;
+                case "FlowerEnergy":
+                    DeathMsg.text = "You ran our of energy (Land on more flowers) :(";
                     break;
             }
         }
