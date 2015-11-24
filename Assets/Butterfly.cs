@@ -19,8 +19,8 @@ namespace Chrysalis
         const float FLAP_ACCEL = 1f; // units per millisecond
         static float FLAP_DURATION = 50f; // milliseconds
         static float FLAP_DELAY = 25f; // milliseconds
-        static float MAX_Y= 6f;
-        static float MIN_Y= -1.5f;
+        static float MAX_Y = 6f;
+        static float MIN_Y = -1.5f;
         static float MAX_VY = 0.15f; // maximum y velocity
         static float MAX_VX = 0.075f; // maximum X velocity
         static float DELTA_VX = 0.05f; // maximum X velocity
@@ -146,7 +146,6 @@ namespace Chrysalis
         private void flap(FlapDirection dir)
         {
             if (!canFlap) return;
-            var rightwards = dir == FlapDirection.Right;
             flapping = true;
             canFlap = false;
             flapStart = DateTime.Now;
@@ -154,7 +153,8 @@ namespace Chrysalis
             // turn the bird based on direction pressed
             var s = transform.localScale;
 
-            switch (dir) {
+            switch (dir)
+            {
                 case FlapDirection.Right:
                     velocity_x += DELTA_VX;
                     s.x = Mathf.Abs(s.x);
