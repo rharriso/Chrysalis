@@ -27,6 +27,7 @@ namespace Chrysalis
             options.Add(Tree);
             options.Add(Flower);
             options.Add(SpiderWeb);
+            options.Add(SpiderWebFloat);
             options.Add(Branch);
         }
 
