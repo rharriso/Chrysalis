@@ -171,9 +171,9 @@ namespace Chrysalis
                 var touch = Input.touches[0];
                 if (touch.phase == TouchPhase.Began)
                 {
-                    if (touch.position.x > thirdScreen)
+                    if (touch.position.x > Screen.width - thirdScreen)
                         flap(FlapDirection.Right);
-                    else if (touch.position.x > Screen.width - thirdScreen)
+                    else if (touch.position.x > thirdScreen)
                         flap(FlapDirection.Down);
                     else
                         flap(FlapDirection.Left);

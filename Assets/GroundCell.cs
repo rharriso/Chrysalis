@@ -10,9 +10,9 @@ namespace Chrysalis
         FeatureCell sourceCell;
         List<FeatureCell> featureCells = new List<FeatureCell>();
 
-        int featureCellCount = 3;
-        int centerIndex = 1;
-        float offset = 6f;
+        int featureCellCount = 5;
+        int centerIndex = 2;
+        float offset = 3f;
         private bool filled;
 
 

@@ -101,7 +101,7 @@ namespace Chrysalis
             var pos = zeroPosition;
             pos.x = position * size.x;
             cell.transform.localPosition = pos;
-            if(position == 0)
+            if (position == 0)
                 cell.GetComponent<GroundCell>().SetFeaturesActive(false);
             else
                 cell.GetComponent<GroundCell>().Refresh();

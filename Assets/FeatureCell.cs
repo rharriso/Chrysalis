@@ -45,13 +45,13 @@ namespace Chrysalis
             // select random options for activations
             var prob = Random.value;
 
-            if(prob < 0.15f)
+            if(prob < 0.05f)
                 currOption = Tree;
-            else if(prob < 0.40f)
+            else if(prob < 0.30f)
                 currOption = Flower;
-            else if(prob < 0.65f)
+            else if(prob < 0.55f)
                 currOption = SpiderWeb;
-            else if(prob < 0.85f)
+            else if(prob < 0.75f)
                 currOption = SpiderWebFloat;
             else
                 currOption = Branch;
