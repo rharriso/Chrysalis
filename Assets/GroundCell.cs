@@ -10,9 +10,6 @@ namespace Chrysalis
         FeatureCell sourceCell;
         List<FeatureCell> featureCells = new List<FeatureCell>();
 
-        Vector3 featureCellSize;
-        Vector3 featureCellPos;
-        Vector3 size;
         int featureCellCount = 3;
         int centerIndex = 1;
         float offset = 6f;
@@ -22,9 +19,6 @@ namespace Chrysalis
         // Use this for initialization
         void Start()
         {
-            size = GetComponent<RectTransform>().rect.size;
-            featureCellPos = sourceCell.transform.localPosition;
-            featureCellSize = sourceCell.GetComponent<RectTransform>().rect.size;
         }
 
         // Update is called once per frame
